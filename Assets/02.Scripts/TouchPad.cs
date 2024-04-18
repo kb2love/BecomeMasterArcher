@@ -4,15 +4,94 @@ using UnityEngine;
 
 public class TouchPad : MonoBehaviour
 {
-    // Start is called before the first frame update
+    private float dragRadius = 150f;
+    private RectTransform orignTouchPadTr;
+    private Vector3 dragStartPos = Vector3.zero;
+    private int touchIdx = -1;
+    private bool buttonPress = false;
+    private PlayerMovement playerMovement;
     void Start()
     {
-        
+        playerMovement = GameObject.FindWithTag("Player").GetComponent<PlayerMovement>();
+        orignTouchPadTr = GetComponent<RectTransform>();
+        dragStartPos = orignTouchPadTr.position;
+    }
+    public void ButtonDown()
+    {
+        buttonPress = true;
+    }
+    public void ButtonUp()
+    {
+        buttonPress = false;
+        HandleInput(dragStartPos);
     }
 
-    // Update is called once per frame
+
     void Update()
     {
-        
+        if(Application.platform == RuntimePlatform.Android)
+        {
+            HandleTouchInput();
+        }
+        else
+        {
+            HandleInput(Input.mousePosition);
+        }
+    }
+    private void HandleTouchInput()
+    {
+        int i = 0;
+        if (Input.touchCount > 0)
+        {
+            foreach (Touch touch in Input.touches)
+            {
+                i++;
+                Vector3 touchPos = new Vector3(touch.position.x, touch.position.y);
+                if (touch.phase == TouchPhase.Began)
+                {
+                    if (touch.position.x <= (dragStartPos.x + dragRadius))
+                    {
+                        touchIdx = i;
+                    }
+                    if (touch.position.y <= (dragStartPos.y + dragRadius))
+                    {
+                        touchIdx = i;
+                    }
+                }
+                if (touch.phase == TouchPhase.Moved || touch.phase == TouchPhase.Stationary)
+                {
+                    if (touchIdx == i)
+                        HandleInput(touchPos);
+                }
+                if (touch.phase == TouchPhase.Ended)
+                {
+                    if (touchIdx == i)
+                        touchIdx = -1;
+                }
+            }
+        }
+    }
+    private void HandleInput(Vector3 input)
+    {
+        if (buttonPress)
+        {
+            Vector3 diferVector = input - dragStartPos;
+            if(diferVector.sqrMagnitude > dragRadius * dragRadius)
+            {
+                diferVector.Normalize();
+                orignTouchPadTr.position = dragStartPos + diferVector * dragRadius;
+            }
+            else
+            {
+                orignTouchPadTr.position = input;
+            }
+        }
+        else
+        {
+            orignTouchPadTr.position = dragStartPos;
+        }
+        Vector3 diff = orignTouchPadTr.position - dragStartPos;
+        Vector3 normalDiff = new Vector3(diff.x / dragRadius,0, diff.y / dragRadius);
+        playerMovement.OnStickPos(normalDiff);
     }
 }
