@@ -92,6 +92,6 @@ public class TouchPad : MonoBehaviour
         }
         Vector3 diff = orignTouchPadTr.position - dragStartPos;
         Vector3 normalDiff = new Vector3(diff.x / dragRadius,0, diff.y / dragRadius);
-        playerMovement.OnStickPos(normalDiff);
+        playerMovement.OnStickPos(normalDiff, diff);
     }
 }
