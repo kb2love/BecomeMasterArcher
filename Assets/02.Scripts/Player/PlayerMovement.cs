@@ -6,8 +6,9 @@ using Unity.VisualScripting;
 
 public class PlayerMovement : MonoBehaviour
 {
-    private float moveSpeed = 5.0f;
-    public float h = 0, v = 0;
+    [SerializeField] private float moveSpeed = 1.0f;
+    [SerializeField] PlayerData playerData;
+    private float h = 0, v = 0;
     private Animator animator;
     private Vector3 frontDir;
     public void OnStickPos(Vector3 stickPos, Vector3 diffVec)
@@ -32,7 +33,7 @@ public class PlayerMovement : MonoBehaviour
             dir.z = dir.x = 0;
             transform.rotation = Quaternion.Slerp(transform.rotation, dir, 10f * Time.deltaTime);
         }
-        transform.Translate(h * Time.deltaTime, 0, v * Time.deltaTime, Space.World);
+        transform.Translate(h * Time.deltaTime * playerData.plSpeed, 0, v * Time.deltaTime * playerData.plSpeed, Space.World);
 
     }
 }

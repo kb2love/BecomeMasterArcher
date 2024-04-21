@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class TouchPad : MonoBehaviour
 {
-    private float dragRadius = 150f;
+    private float dragRadius = 50f;
     private RectTransform orignTouchPadTr;
     private Vector3 dragStartPos = Vector3.zero;
     private int touchIdx = -1;
     private bool buttonPress = false;
-    private PlayerMovement playerMovement;
+    [SerializeField] private PlayerMovement playerMovement;
     void Start()
     {
-        playerMovement = GameObject.FindWithTag("Player").GetComponent<PlayerMovement>();
+        playerMovement = GameObject.Find("Player").GetComponent<PlayerMovement>();
         orignTouchPadTr = GetComponent<RectTransform>();
         dragStartPos = orignTouchPadTr.position;
     }
