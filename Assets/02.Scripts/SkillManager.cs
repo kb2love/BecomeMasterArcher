@@ -8,6 +8,7 @@ public class SkillManager : MonoBehaviour
 {
     [SerializeField] SkillData skillData;
     [SerializeField] PlayerData playerData;
+    private TouchPad touchPadIm;
     private GameObject skillPanel;
     private GameObject touchPad;
     private Image skillButtonIm01;
@@ -23,7 +24,7 @@ public class SkillManager : MonoBehaviour
         skillButtonIm02 = skillPanel.transform.GetChild(1).GetComponent<Image>();
         touchPad = GameObject.Find("Canvas").transform.GetChild(0).gameObject;
         skillSprites = new Sprite[]{ skillData.attackPower_Im, skillData.attackSpeed_Im, skillData.criticalUp_Im, skillData.hpUp_Im, skillData.doubleAttack_Im};
-        
+        touchPadIm = GameObject.Find("TouchPad_Image").GetComponent<TouchPad>();
     }
 
     void Update()
@@ -36,9 +37,8 @@ public class SkillManager : MonoBehaviour
         {
             touchPad.SetActive(false);
             skillPanel.SetActive(true);
+            touchPadIm.buttonPress = false;
             Time.timeScale = 0;
-            GameObject touchPadIm = GameObject.Find("TouchPad_Image").gameObject;
-            touchPadIm.GetComponent<TouchPad>().buttonPress = false;
             firstIndex = Random.Range(0, skillSprites.Length);
             secondIndex = Random.Range(0, skillSprites.Length);
             while(firstIndex == secondIndex)
@@ -121,8 +121,10 @@ public class SkillManager : MonoBehaviour
     }
     private void SkillSelect()
     {
-        Time.timeScale = 1.0f;
         skillPanel.SetActive(false);
+        Time.timeScale = 1.0f;
+        touchPad.SetActive(true);
+        touchPadIm.buttonPress = true;
         GameObject skillGost = GameObject.Find("SkillGost").gameObject;
         skillGost.SetActive(false);
         GameObject Potal = GameObject.Find("Door").transform.GetChild(0).gameObject;
