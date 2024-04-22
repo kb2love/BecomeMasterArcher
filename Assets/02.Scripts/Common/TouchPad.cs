@@ -8,7 +8,7 @@ public class TouchPad : MonoBehaviour
     private RectTransform orignTouchPadTr;
     private Vector3 dragStartPos = Vector3.zero;
     private int touchIdx = -1;
-    private bool buttonPress = false;
+    public bool buttonPress = false;
     [SerializeField] private PlayerMovement playerMovement;
     void Start()
     {

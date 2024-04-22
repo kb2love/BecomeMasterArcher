@@ -6,11 +6,11 @@ public class EnemyManager : MonoBehaviour
 {
     [SerializeField] private Transform[] enemies;
     [SerializeField] private List<GameObject> enemiesList;
-    private GameObject store;
+    private GameObject skillGost;
     private int enemyCount = 0;
     void Start()
     {
-        store = GameObject.Find("Store").gameObject;
+        skillGost = GameObject.Find("SkillGost").gameObject;
         enemies = GameObject.Find("Enemies").GetComponentsInChildren<Transform>();
         if(enemies.Length > 1)
         {
@@ -22,7 +22,7 @@ public class EnemyManager : MonoBehaviour
         enemyCount = enemiesList.Count;
         if(enemyCount == 0)
         {
-            store.transform.DOJump(new Vector3(0, 0, 2), 0, 0, 0.5f);
+            skillGost.transform.DOJump(new Vector3(0, 0, 2), 0, 0, 0.5f);
 
 
         }
@@ -36,7 +36,7 @@ public class EnemyManager : MonoBehaviour
         enemyCount--;
         if(enemyCount <= 0)
         {
-            
+            skillGost.transform.DOJump(new Vector3(0, 0, 2), 0, 0, 0.5f);
         }
     }
 }

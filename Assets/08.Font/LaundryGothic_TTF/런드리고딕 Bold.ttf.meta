@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: 5e78026b47f556f469ccef09d9da44a3
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - LaundryGothic
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 97599a8b707a2684ea313cc3d46d7b12, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
