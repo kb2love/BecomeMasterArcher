@@ -10,9 +10,8 @@ public class ArrowCtrl : MonoBehaviour
     void OnEnable()
     {
         rb = GetComponent<Rigidbody>();
-        Vector3 asd = new Vector3(0, 0, 1);
-        asd = transform.TransformDirection(asd);
-        rb.AddForce(asd * 50000f * Time.deltaTime);
+        rb.AddForce(transform.forward * 50000f * Time.deltaTime);
+        Invoke("SetOff", 3.0f);
     }
     void OnTriggerEnter(Collider other)
     {
@@ -22,5 +21,9 @@ public class ArrowCtrl : MonoBehaviour
             other.GetComponent<EnemyDamage>().RecieveDamage(playerData.plDamage);
             gameObject.SetActive(false);
         }
+    }
+    private void SetOff()
+    {
+        gameObject.SetActive(false);
     }
 }

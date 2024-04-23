@@ -27,7 +27,7 @@ public class EnemyDamage : MonoBehaviour
         {
             gameObject.SetActive(false);
             PlayerAttack playerAttack = GameObject.Find("Player").GetComponent<PlayerAttack>();
-            playerAttack.IsFind();
+            playerAttack.EnemyDie(transform);
         }
     }
 }
