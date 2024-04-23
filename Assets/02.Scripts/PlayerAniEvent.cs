@@ -12,8 +12,11 @@ public class PlayerAniEvent : MonoBehaviour
     public void ArrowShot()
     {
         GameObject arrow = ObjectPoolingManager.objInstance.GetArrow();
-        arrow.transform.position = attackPos.position;
-        arrow.transform.rotation = attackPos.rotation; 
-        arrow.SetActive(true);
+        if(arrow != null )
+        {
+            arrow.transform.position = attackPos.position;
+            arrow.transform.rotation = attackPos.rotation;
+            arrow.SetActive(true);
+        }
     }
 }

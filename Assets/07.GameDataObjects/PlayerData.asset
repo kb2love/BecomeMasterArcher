@@ -16,4 +16,4 @@ MonoBehaviour:
   plDamage: 20
   plHP: 100
   plAtcSpeed: 1
-  arrow: {fileID: 7374704423810351894, guid: 4006bf2343511d940bc0bb6b66af2d1c, type: 3}
+  arrow: {fileID: 7912610660233036064, guid: f56e35efd1feac1458737a89d73c15c3, type: 3}

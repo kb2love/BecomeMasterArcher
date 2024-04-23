@@ -1,22 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using DG.Tweening;
-using TMPro;
+using Unity.VisualScripting;
 
 public class ArrowCtrl : MonoBehaviour
 {
-    void Start()
+    [SerializeField] PlayerData playerData;
+    private Rigidbody rb;
+    void OnEnable()
     {
-        Vector3 targetPosition = transform.position + transform.forward * 20f;
-        transform.DOMove(targetPosition, 10f).OnComplete(() =>
-        {
-            gameObject.SetActive(false); ;
-        });
+        rb = GetComponent<Rigidbody>();
+        Vector3 asd = new Vector3(0, 0, 1);
+        asd = transform.TransformDirection(asd);
+        rb.AddForce(asd * 50000f * Time.deltaTime);
     }
-    public void ArrowDamage(float a_damage)
+    void OnTriggerEnter(Collider other)
     {
-        float damage = 20f;
-        a_damage -= damage;
+        Debug.Log("123");
+        if (other.gameObject.tag == "Enemy")
+        {
+            other.GetComponent<EnemyDamage>().RecieveDamage(playerData.plDamage);
+            gameObject.SetActive(false);
+        }
     }
 }
