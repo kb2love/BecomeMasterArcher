@@ -17,27 +17,42 @@ public class EnemyDamage : MonoBehaviour
 
     void Update()
     {
-        
+
     }
     private void OnTriggerEnter(Collider other)
     {
-        
+
     }
     public void RecieveDamage(float damage)
     {
         hp -= damage;
         Debug.Log(hp);
         animator.SetTrigger("HitTrigger");
-        Sequence sequence = DOTween.Sequence();
-        sequence.AppendCallback(()  => enemyMove.IsHitBool(true)).SetDelay(0).SetUpdate(true);
-        sequence.AppendInterval(0.5f);
-        sequence.AppendCallback(() => enemyMove.IsHitBool(false)).SetDelay(0).SetUpdate(true);
-        enemyMove.IsHitBool(true);
+        HitEff();
+
+        DOTween.Sequence()
+            .AppendCallback(() => enemyMove.IsHitBool(true))
+            .AppendInterval(0.5f)
+            .AppendCallback(() => enemyMove.IsHitBool(false))
+            .SetUpdate(true);
         if (hp <= 0)
         {
             gameObject.SetActive(false);
             PlayerAttack playerAttack = GameObject.Find("Player").GetComponent<PlayerAttack>();
             playerAttack.EnemyDie(transform);
         }
+    }
+
+    private void HitEff()
+    {
+        GameObject hitEff = ObjectPoolingManager.objInstance.GetHitEff();
+        hitEff.transform.position = transform.position;
+        hitEff.transform.rotation = transform.rotation;
+        hitEff.SetActive(true);
+        DOTween.Sequence()
+        .AppendCallback(() => hitEff.SetActive(true))
+        .AppendInterval(0.15f)
+        .AppendCallback(() => hitEff.SetActive(false))
+        .SetUpdate(true);
     }
 }

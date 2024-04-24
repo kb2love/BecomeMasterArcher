@@ -8,6 +8,7 @@ public class PlayerAttack : MonoBehaviour
     private Animator animator;
     private TouchPad touchPad;
     [SerializeField] private List<Transform> enemiesList = new List<Transform>();
+    [SerializeField] private List<float> distances = new List<float>();
     [SerializeField] private bool isFind = true;
 
     private Transform attackPos;
@@ -58,7 +59,7 @@ public class PlayerAttack : MonoBehaviour
     }
 
     private void FindEnemy()
-    {
+    {//피직스 스페어케스트를 활용해서 가장가까운 적을찾는게 맞을듯?
         if (isFind)
         {
             float shortestDistance = Mathf.Infinity;

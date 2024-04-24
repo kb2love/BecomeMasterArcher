@@ -6,4 +6,5 @@ public class EnemyData : ScriptableObject
 {
     public float Hp;
     public float Damage;
+    public GameObject hitEff;
 }
