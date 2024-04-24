@@ -9,11 +9,14 @@ public class PlayerAttack : MonoBehaviour
     private TouchPad touchPad;
     [SerializeField] private List<Transform> enemiesList = new List<Transform>();
     [SerializeField] private bool isFind = true;
+
+    private Transform attackPos;
     private int idx = 0;
     void Start()
     {
         touchPad = GameObject.Find("TouchPad_Image").GetComponent<TouchPad>();
         animator = transform.GetChild(0).GetComponent<Animator>();
+        animator.SetFloat("AttackSpeed", playerData.plAtcSpeed);
         Transform parentTransform = GameObject.Find("Enemies").transform;
         for (int i = 0; i < parentTransform.childCount; i++)
         {
@@ -23,6 +26,7 @@ public class PlayerAttack : MonoBehaviour
         {
             FindEnemy();
         }
+        attackPos = GameObject.Find("AttackPos").transform;
     }
 
     void Update()
@@ -71,6 +75,16 @@ public class PlayerAttack : MonoBehaviour
                     break;
                 }
             }
+        }
+    }
+    public void Attack()
+    {
+        if (ObjectPoolingManager.objInstance.GetArrow() != null)
+        {
+            GameObject arrow = ObjectPoolingManager.objInstance.GetArrow();
+            arrow.transform.position = attackPos.position;
+            arrow.transform.rotation = attackPos.rotation;
+            arrow.SetActive(true);
         }
     }
     public void EnemyDie(Transform tr)

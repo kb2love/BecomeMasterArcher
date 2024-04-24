@@ -18,7 +18,7 @@ public class ObjectPoolingManager : MonoBehaviour
         {
             GameObject arrow = Instantiate(playerData.arrow,arrowGroup.transform);
             arrow.name = (i+1).ToString() + "°³";
-            arrow.SetActive(false);
+            arrow.gameObject.SetActive(false);
             arrowList.Add(arrow);
         }
     }
@@ -28,9 +28,7 @@ public class ObjectPoolingManager : MonoBehaviour
         foreach(GameObject arrows in arrowList)
         {
             if(!arrows.activeSelf)
-            {
                 return arrows;
-            }
         }
         return null;
     }

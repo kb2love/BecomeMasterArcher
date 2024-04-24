@@ -7,6 +7,7 @@ public class EnemyMove : MonoBehaviour
     private NavMeshAgent agent;
     private Transform plTr;
     private Animator animator;
+    [SerializeField] private bool isHit = false;
     [SerializeField] private float dist = 0.5f;
     void Start()
     {
@@ -19,16 +20,25 @@ public class EnemyMove : MonoBehaviour
     {
         agent.destination = plTr.position; 
         float dis = Vector3.Distance(transform.position, plTr.position);
-        if(dis < dist)
+        if(isHit)
+        {
+            agent.isStopped = true;
+            animator.SetBool("IsWalk", false);
+        }
+        else if(dis < dist && !isHit)
         {
             agent.isStopped = true;
             animator.SetTrigger("AttackTrigger");
             animator.SetBool("IsWalk", false);
         }
-        else if(dis > dist)
+        else if(dis > dist && !isHit)
         {
             agent.isStopped = false;
             animator.SetBool("IsWalk", true);
         }
+    }
+    public void IsHitBool(bool hit)
+    {
+        isHit = hit;
     }
 }
