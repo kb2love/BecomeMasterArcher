@@ -7,11 +7,9 @@ using DG.Tweening;
 public class ArrowCtrl : MonoBehaviour
 {
     [SerializeField] PlayerData playerData;
-    [SerializeField] Transform atackPos;
     private Tweener tweener;
     void OnEnable()
     {
-        atackPos = GameObject.Find("AttackPos").transform;
         if(tweener != null)
             tweener.Kill();
         tweener = transform.DOLocalMove(transform.forward * 10f, 2.5f).OnComplete(SetOff);
@@ -20,7 +18,17 @@ public class ArrowCtrl : MonoBehaviour
     {
         if (other.gameObject.tag == "Enemy")
         {
-            other.GetComponent<EnemyDamage>().RecieveDamage(playerData.plDamage);
+            float randomValue = Random.value;
+            if(randomValue < playerData.plCritical)
+            {
+                other.GetComponent<EnemyDamage>().RecieveDamage(playerData.plDamage * 2);
+                Debug.Log("크리티컬");
+            }
+            else
+            {
+                other.GetComponent<EnemyDamage>().RecieveDamage(playerData.plDamage);
+                Debug.Log("일반공격");
+            }
             gameObject.SetActive(false);
         }
     }

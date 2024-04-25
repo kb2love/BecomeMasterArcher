@@ -6,7 +6,7 @@ public class EnemyDamage : MonoBehaviour
 {
     [SerializeField] private EnemyData _enemyData;
     private EnemyMove enemyMove;
-    private float hp;
+    public float hp;
     private Animator animator;
     void Start()
     {
@@ -37,7 +37,14 @@ public class EnemyDamage : MonoBehaviour
             .SetUpdate(true);
         if (hp <= 0)
         {
-            gameObject.SetActive(false);
+            gameObject.GetComponent<Collider>().enabled = false;
+            enemyMove.E_Die();
+            animator.SetTrigger("DieTrigger");
+            animator.SetBool("IsDie", true);
+            DOTween.Sequence()
+            .AppendInterval(1.2f)
+            .AppendCallback(() => gameObject.SetActive(false))
+            .SetUpdate(true);
             PlayerAttack playerAttack = GameObject.Find("Player").GetComponent<PlayerAttack>();
             playerAttack.EnemyDie(transform);
         }

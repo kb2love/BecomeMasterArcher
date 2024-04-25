@@ -35,19 +35,25 @@ public class SkillManager : MonoBehaviour
     {
         if(other.gameObject.CompareTag(playerName))
         {
-            touchPad.SetActive(false);
-            skillPanel.SetActive(true);
-            touchPadIm.buttonPress = false;
-            Time.timeScale = 0;
-            firstIndex = Random.Range(0, skillSprites.Length);
-            secondIndex = Random.Range(0, skillSprites.Length);
-            while(firstIndex == secondIndex)
-                secondIndex = Random.Range(0, skillSprites.Length);
-            // 두 개의 스프라이트 할당
-            skillButtonIm01.sprite = skillSprites[firstIndex];
-            skillButtonIm02.sprite = skillSprites[secondIndex];
+            SkillStoreOpen();
         }
     }
+
+    private void SkillStoreOpen()
+    {
+        touchPad.SetActive(false);
+        skillPanel.SetActive(true);
+        touchPadIm.buttonPress = false;
+        Time.timeScale = 0;
+        firstIndex = Random.Range(0, skillSprites.Length);
+        secondIndex = Random.Range(0, skillSprites.Length);
+        while (firstIndex == secondIndex)
+            secondIndex = Random.Range(0, skillSprites.Length);
+        // 두 개의 스프라이트 할당
+        skillButtonIm01.sprite = skillSprites[firstIndex];
+        skillButtonIm02.sprite = skillSprites[secondIndex];
+    }
+
     public void SkillButton01()
     {
         if (skillSprites[firstIndex] == skillSprites[0])
@@ -96,27 +102,39 @@ public class SkillManager : MonoBehaviour
     }
     private void AttackPower()
     {
-        Debug.Log("어택파워");
+        playerData.plDamage *= 1.2f;
+        Debug.Log(playerData.plDamage);
         SkillSelect();
     }
     private void AttackSpeed()
     {
-        Debug.Log("어택스피드");
         SkillSelect();
+        playerData.plAtcSpeed *= 1.2f;
+        Debug.Log(playerData.plAtcSpeed);
     }
     private void CriticalUp()
     {
-        Debug.Log("크리티컬업");
         SkillSelect();
+        if(playerData.plCritical >= 0.5)
+        {
+            playerData.plCritical += 0.025f;
+        }
+        else
+        {
+            playerData.plCritical *= 2f;
+        }
+        Debug.Log(playerData.plCritical);
     }
     private void HpUp()
     {
-        Debug.Log("애취피업");
         SkillSelect();
+        playerData.plHP *= 1.2f;
+        Debug.Log(playerData.plHP);
     }
     private void DoubleAttack()
     {
-        Debug.Log("더블어택");
+        playerData.isDoubleAtc = true;
+        Debug.Log(playerData.isDoubleAtc);
         SkillSelect();
     }
     private void SkillSelect()

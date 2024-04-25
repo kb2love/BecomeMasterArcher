@@ -7,6 +7,7 @@ public class EnemyMove : MonoBehaviour
     private NavMeshAgent agent;
     private Transform plTr;
     private Animator animator;
+    private bool isDie;
     [SerializeField] private bool isHit = false;
     [SerializeField] private float dist = 0.5f;
     void Start()
@@ -14,13 +15,14 @@ public class EnemyMove : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
         plTr = GameObject.Find("Player").transform;
+        isDie = false;
     }
 
     void Update()
     {
         agent.destination = plTr.position; 
         float dis = Vector3.Distance(transform.position, plTr.position);
-        if(isHit)
+        if(isHit || isDie)
         {
             agent.isStopped = true;
             animator.SetBool("IsWalk", false);
@@ -37,8 +39,13 @@ public class EnemyMove : MonoBehaviour
             animator.SetBool("IsWalk", true);
         }
     }
-    public void IsHitBool(bool hit)
+    public void IsHitBool(bool e_hit)
     {
-        isHit = hit;
+        isHit = e_hit;
+    }
+    public void E_Die()
+    {
+        isDie = true;
+        Debug.Log("Á×À½");
     }
 }

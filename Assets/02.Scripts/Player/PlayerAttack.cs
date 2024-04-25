@@ -7,27 +7,21 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] PlayerData playerData;
     private Animator animator;
     private TouchPad touchPad;
-    [SerializeField] private List<Transform> enemiesList = new List<Transform>();
     [SerializeField] private List<float> distances = new List<float>();
     [SerializeField] private bool isFind = true;
 
     private Transform attackPos;
-    private int idx = 0;
+    private LayerMask enemyLayer = 1 << 6;
+    [SerializeField] RaycastHit closeEnemy = new RaycastHit();
+    [SerializeField] Transform enemyTr;
     void Start()
     {
         touchPad = GameObject.Find("TouchPad_Image").GetComponent<TouchPad>();
         animator = transform.GetChild(0).GetComponent<Animator>();
         animator.SetFloat("AttackSpeed", playerData.plAtcSpeed);
         Transform parentTransform = GameObject.Find("Enemies").transform;
-        for (int i = 0; i < parentTransform.childCount; i++)
-        {
-            enemiesList.Add(parentTransform.GetChild(i));
-        }
-        if(enemiesList.Count > 0)
-        {
-            FindEnemy();
-        }
         attackPos = GameObject.Find("AttackPos").transform;
+        FindEnemy();
     }
 
     void Update()
@@ -40,11 +34,9 @@ public class PlayerAttack : MonoBehaviour
         }
         else
         {//멈춰서 공격o
-            if (enemiesList.Count > 0)
+            if (closeEnemy.transform != null)
             {
-
-                FindEnemy();
-                Quaternion rot = Quaternion.LookRotation((enemiesList[idx].position - transform.position).normalized);
+                Quaternion rot = Quaternion.LookRotation((closeEnemy.transform.position - transform.position).normalized);
                 rot.x = rot.z = 0f;
                 transform.rotation = Quaternion.Slerp(transform.rotation, rot, Time.deltaTime * 10.0f);
                 animator.SetBool("IsWalk", false);
@@ -60,23 +52,36 @@ public class PlayerAttack : MonoBehaviour
 
     private void FindEnemy()
     {//피직스 스페어케스트를 활용해서 가장가까운 적을찾는게 맞을듯?
-        if (isFind)
+        
+        RaycastHit[] hits;
+        hits = Physics.SphereCastAll(transform.position, 10f, transform.forward, 20f, enemyLayer);
+        if(hits.Length > 0 )
         {
-            float shortestDistance = Mathf.Infinity;
-            idx = 0;
-            for (int i = 0; i < enemiesList.Count; i++)
+            Debug.Log("됨?");
+            float closeEnemydis = Mathf.Infinity;
+            foreach (RaycastHit hit in hits)
             {
-                float distanceToEnemy = Vector3.Distance(transform.position, enemiesList[i].position); // 플레이어와 적 사이의 거리 계산
-                
-                if (distanceToEnemy < shortestDistance)
+                float dis = Vector3.Distance(transform.position, hit.point);
+                if (dis < closeEnemydis)
                 {
-                    idx = i;
-                    shortestDistance = distanceToEnemy; // 현재 적과의 거리가 현재까지의 가장 짧은 거리보다 짧으면 갱신
-                    isFind = false;
-                    break;
+                    closeEnemydis = dis;
+                    this.closeEnemy = hit;
+                    enemyTr = hit.transform;
                 }
             }
         }
+        /*for (int i = 0; i < enemiesList.Count; i++)
+        {
+            float distanceToEnemy = Vector3.Distance(transform.position, enemiesList[i].position); // 플레이어와 적 사이의 거리 계산
+
+            if (distanceToEnemy < closeEnemydis)
+            {
+                idx = i;
+                closeEnemydis = distanceToEnemy; // 현재 적과의 거리가 현재까지의 가장 짧은 거리보다 짧으면 갱신
+                isFind = false;
+                break;
+            }
+        }*/
     }
     public void Attack()
     {
@@ -91,9 +96,6 @@ public class PlayerAttack : MonoBehaviour
     public void EnemyDie(Transform tr)
     {
         isFind = true;
-        idx = 0;
-        enemiesList.Remove(tr);
         FindEnemy();
-        
     }
 }
