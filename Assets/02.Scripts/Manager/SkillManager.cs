@@ -8,6 +8,7 @@ public class SkillManager : MonoBehaviour
 {
     [SerializeField] SkillData skillData;
     [SerializeField] PlayerData playerData;
+    [SerializeField] SoundData soundData;
     private TouchPad touchPadIm;
     private GameObject skillPanel;
     private GameObject touchPad;
@@ -45,6 +46,7 @@ public class SkillManager : MonoBehaviour
         skillPanel.SetActive(true);
         touchPadIm.buttonPress = false;
         Time.timeScale = 0;
+        SoundManager.soundInst.GetComponent<AudioSource>().PlayOneShot(soundData.storeOpenClip);
         firstIndex = Random.Range(0, skillSprites.Length);
         secondIndex = Random.Range(0, skillSprites.Length);
         while (firstIndex == secondIndex)

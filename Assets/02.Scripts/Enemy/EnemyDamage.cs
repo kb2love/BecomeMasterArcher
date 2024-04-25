@@ -5,23 +5,17 @@ using DG.Tweening;
 public class EnemyDamage : MonoBehaviour
 {
     [SerializeField] private EnemyData _enemyData;
-    private EnemyMove enemyMove;
+    [SerializeField] SoundData soundData;
+    private EnemyState enemyMove;
     public float hp;
     private Animator animator;
+    private AudioSource source;
     void Start()
     {
         hp = _enemyData.Hp;
-        enemyMove = GetComponent<EnemyMove>();
+        source = GetComponent<AudioSource>();
+        enemyMove = GetComponent<EnemyState>();
         animator = GetComponent<Animator>();
-    }
-
-    void Update()
-    {
-
-    }
-    private void OnTriggerEnter(Collider other)
-    {
-
     }
     public void RecieveDamage(float damage)
     {
@@ -29,7 +23,7 @@ public class EnemyDamage : MonoBehaviour
         Debug.Log(hp);
         animator.SetTrigger("HitTrigger");
         HitEff();
-
+        SoundManager.soundInst.PlaySound(source, soundData.e_hitClip);
         DOTween.Sequence()
             .AppendCallback(() => enemyMove.IsHitBool(true))
             .AppendInterval(0.5f)

@@ -16,6 +16,6 @@ MonoBehaviour:
   plDamage: 20
   plHP: 100
   plAtcSpeed: 1.5
-  plCritical: 0.1
-  isDoubleAtc: 0
+  plCritical: 0.05
+  isDoubleAtc: 1
   arrow: {fileID: 7912610660233036064, guid: f56e35efd1feac1458737a89d73c15c3, type: 3}

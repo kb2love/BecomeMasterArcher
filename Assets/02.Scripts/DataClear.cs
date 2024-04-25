@@ -10,9 +10,10 @@ public class DataClear : MonoBehaviour
         playerData.plSpeed = 1.5f;
         playerData.plDamage = 20f;
         playerData.plHP = 100f;
-        playerData.plAtcSpeed = 1.5f;
+        playerData.plAtcSpeed = 1.0f;
         playerData.plCritical = 0.05f;
         playerData.isDoubleAtc = false;
+        GameObject.Find("Player").GetComponent<PlayerAttack>().AttackSpeedUp();
     }
 
 }

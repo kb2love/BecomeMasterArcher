@@ -1,19 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using DG.Tweening;
 public class PlayerAttack : MonoBehaviour
 {
     [SerializeField] PlayerData playerData;
+    [SerializeField] SoundData soundData;
     private Animator animator;
     private TouchPad touchPad;
-    [SerializeField] private List<float> distances = new List<float>();
-    [SerializeField] private bool isFind = true;
+    private AudioSource source;
 
     private Transform attackPos;
     private LayerMask enemyLayer = 1 << 6;
-    [SerializeField] RaycastHit closeEnemy = new RaycastHit();
-    [SerializeField] Transform enemyTr;
+    RaycastHit closeEnemy = new RaycastHit();
+    Transform enemyTr;
     void Start()
     {
         touchPad = GameObject.Find("TouchPad_Image").GetComponent<TouchPad>();
@@ -21,6 +21,7 @@ public class PlayerAttack : MonoBehaviour
         animator.SetFloat("AttackSpeed", playerData.plAtcSpeed);
         Transform parentTransform = GameObject.Find("Enemies").transform;
         attackPos = GameObject.Find("AttackPos").transform;
+        source = GetComponent<AudioSource>();
         FindEnemy();
     }
 
@@ -28,7 +29,6 @@ public class PlayerAttack : MonoBehaviour
     {
         if (touchPad.buttonPress)
         {//움직일떄 공격x
-            isFind = true;
             animator.SetBool("IsWalk", true);
 
         }
@@ -87,15 +87,35 @@ public class PlayerAttack : MonoBehaviour
     {
         if (ObjectPoolingManager.objInstance.GetArrow() != null)
         {
-            GameObject arrow = ObjectPoolingManager.objInstance.GetArrow();
-            arrow.transform.position = attackPos.position;
-            arrow.transform.rotation = attackPos.rotation;
-            arrow.SetActive(true);
+            if(!playerData.isDoubleAtc)
+            {
+                ArrowShot();
+            }
+            else
+            {
+                ArrowShot();
+                Sequence sequence = DOTween.Sequence();
+                sequence.AppendInterval(0.15f)
+                        .AppendCallback(() => ArrowShot());
+            }
         }
     }
+
+    void ArrowShot()
+    {
+        GameObject arrow = ObjectPoolingManager.objInstance.GetArrow();
+        arrow.transform.position = attackPos.position;
+        arrow.transform.rotation = attackPos.rotation;
+        arrow.SetActive(true);
+        source.PlayOneShot(soundData.arrowClip);
+    }
+
     public void EnemyDie(Transform tr)
     {
-        isFind = true;
         FindEnemy();
+    }
+    public void AttackSpeedUp()
+    {
+        animator.SetFloat("AttackSpeed", playerData.plAtcSpeed);
     }
 }

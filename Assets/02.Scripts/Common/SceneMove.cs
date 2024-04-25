@@ -7,8 +7,9 @@ public class SceneMove : MonoBehaviour
 {
     public static SceneMove scenenInst;
     private int sceneIdx = 0;
-    [SerializeField] private TextMeshProUGUI stageNumber;
-    [SerializeField] private Animator animator;
+    private TextMeshProUGUI stageNumber;
+    private Animator animator;
+    
     void Awake()
     {
         if (scenenInst == null)
@@ -36,6 +37,7 @@ public class SceneMove : MonoBehaviour
     {
         sceneIdx++;
         SceneManager.LoadScene(sceneIdx);
+        SoundManager.soundInst.NextStageSound();
     }
     void OnSceneChanged(Scene scene, LoadSceneMode mode)
     { 
