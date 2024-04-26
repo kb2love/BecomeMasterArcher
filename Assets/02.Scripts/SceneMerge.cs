@@ -18,6 +18,5 @@ public class SceneMerge
         };
 
         // ¾À º´ÇÕ ½ÇÇà
-        //EditorSceneManager.LoadSceneInPlayMode(scenePaths, new EnterPlayModeOptions { }) ;
     }
 }
