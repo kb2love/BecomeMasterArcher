@@ -6,9 +6,12 @@ using UnityEngine.SceneManagement;
 public class SceneMove : MonoBehaviour
 {
     public static SceneMove scenenInst;
-    private int sceneIdx = 0;
+    private int sceneIdx = 1;
+    private int sceneTextIdx = 0;
     private TextMeshProUGUI stageNumber;
     private Animator animator;
+    private string stage = "Stage";
+    private string player = "Player";
     
     void Awake()
     {
@@ -18,6 +21,7 @@ public class SceneMove : MonoBehaviour
             Destroy(scenenInst);
         DontDestroyOnLoad(scenenInst);
         SceneManager.sceneLoaded += OnSceneChanged;
+
     }
     void OnDisable()
     {
@@ -26,17 +30,35 @@ public class SceneMove : MonoBehaviour
     }
     public void Start()
     {
-        stageNumber = GameObject.Find("StageNumber-Text (TMP)").GetComponent<TextMeshProUGUI>();
-        animator = stageNumber.gameObject.GetComponent<Animator>();
-        stageNumber.text = (sceneIdx + 1).ToString();
-        animator.SetTrigger("StageStart");
-        Debug.Log(123);
+        if(GameObject.Find("StageNumber-Text (TMP)") != null)
+        {
+            stageNumber = GameObject.Find("StageNumber-Text (TMP)").GetComponent<TextMeshProUGUI>();
+            animator = stageNumber.gameObject.GetComponent<Animator>();
+            stageNumber.text = (sceneTextIdx).ToString();
+            animator.SetTrigger("StageStart");
+        }
     }
 
-    public void NextScene()
+    public void NextStage()
     {
         sceneIdx++;
-        SceneManager.LoadScene(sceneIdx);
+        sceneTextIdx++;
+        if(sceneTextIdx == 1)
+        {
+            SceneManager.LoadScene(player);
+            SceneManager.LoadScene(stage, LoadSceneMode.Additive);
+        }
+        else if(sceneTextIdx == 5)
+        {
+            SceneManager.LoadScene(player);
+            SceneManager.LoadScene(stage, LoadSceneMode.Additive);  
+        }
+        else
+        {
+            SceneManager.LoadScene(player);
+            SceneManager.LoadScene(stage, LoadSceneMode.Additive);
+            SceneManager.LoadScene(sceneIdx, LoadSceneMode.Additive);
+        }
         SoundManager.soundInst.NextStageSound();
     }
     void OnSceneChanged(Scene scene, LoadSceneMode mode)
@@ -46,5 +68,13 @@ public class SceneMove : MonoBehaviour
     public void SceneLoad()
     {
         SceneManager.LoadScene(sceneIdx);
+    }
+    public void QuitGame()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
     }
 }

@@ -19,3 +19,4 @@ MonoBehaviour:
   plHitClip: {fileID: 8300000, guid: a37f44cbf8c2a7443a3c361efa2f233a, type: 3}
   nextStageClip: {fileID: 8300000, guid: a245ee5d75348c84a89ffb7992f1dc82, type: 3}
   storeOpenClip: {fileID: 8300000, guid: 75adfe9a619833445a701305b983e548, type: 3}
+  skillSelect: {fileID: 8300000, guid: 5e1a9f876d3dafd47bc6b3dde25135fa, type: 3}

@@ -20,7 +20,7 @@ public class PotalOpen : MonoBehaviour
     {
         if (other.gameObject.CompareTag(playerName))
         {
-            SceneMove.scenenInst.NextScene();
+            SceneMove.scenenInst.NextStage();
         }
     }
 }

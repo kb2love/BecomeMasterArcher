@@ -417,6 +417,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _enemyData: {fileID: 11400000, guid: 57d521b833774204096d826064ec9fde, type: 2}
   soundData: {fileID: 11400000, guid: 633f08f924e3fbf49a60ca65104875b1, type: 2}
+  playerData: {fileID: 11400000, guid: c9df804151fd5df4ba1b9d8b17c12fa5, type: 2}
   hp: 0
 --- !u!1 &3734213916925689206
 GameObject:

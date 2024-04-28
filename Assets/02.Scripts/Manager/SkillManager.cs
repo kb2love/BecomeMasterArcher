@@ -1,4 +1,5 @@
 
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,9 +7,15 @@ using UnityEngine.UI;
 
 public class SkillManager : MonoBehaviour
 {
+    public static SkillManager skillInst;
     [SerializeField] SkillData skillData;
     [SerializeField] PlayerData playerData;
     [SerializeField] SoundData soundData;
+    [SerializeField] private Transform[] enemies;
+    [SerializeField] private List<GameObject> enemiesList;
+    private Image expImage;
+    private GameObject skillGost;
+    private int enemyCount = 0;
     private TouchPad touchPadIm;
     private GameObject skillPanel;
     private GameObject touchPad;
@@ -18,29 +25,69 @@ public class SkillManager : MonoBehaviour
     private int secondIndex;
     private string playerName = "Player";
     [SerializeField] private Sprite[] skillSprites;
+    private void Awake()
+    {
+        skillInst = this;
+    }
     void Start()
     {
         skillPanel = GameObject.Find("Canvas").transform.GetChild(1).gameObject;
         skillButtonIm01 = skillPanel.transform.GetChild(0).GetComponent<Image>();
         skillButtonIm02 = skillPanel.transform.GetChild(1).GetComponent<Image>();
         touchPad = GameObject.Find("Canvas").transform.GetChild(0).gameObject;
-        skillSprites = new Sprite[]{ skillData.attackPower_Im, skillData.attackSpeed_Im, skillData.criticalUp_Im, skillData.hpUp_Im, skillData.doubleAttack_Im};
+        skillSprites = new Sprite[] { skillData.attackPower_Im, skillData.attackSpeed_Im, skillData.criticalUp_Im, skillData.hpUp_Im, skillData.doubleAttack_Im };
         touchPadIm = GameObject.Find("TouchPad_Image").GetComponent<TouchPad>();
+        skillGost = GameObject.Find("SkillGost").gameObject;
+        expImage = GameObject.Find("ExpImage").GetComponent<Image>();
+        if (GameObject.Find("Enemies") != null)
+        {
+            enemies = GameObject.Find("Enemies").GetComponentsInChildren<Transform>();
+            if (enemies.Length > 1)
+            {
+                for (int i = 1; i < enemies.Length; i++)
+                {
+                    enemiesList.Add(enemies[i].gameObject);
+                }
+            }
+            enemyCount = enemiesList.Count;
+            if (enemyCount == 0)
+            {
+                skillGost.transform.DOJump(new Vector3(0, 0, 2), 0, 0, 0.5f);
+
+
+            }
+        }
+        else
+        {
+            skillGost.transform.DOJump(new Vector3(0, 0, 2), 0, 0, 0.5f);
+        }
     }
 
     void Update()
     {
-        
+
     }
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.CompareTag(playerName))
+        if (other.gameObject.CompareTag(playerName))
         {
             SkillStoreOpen();
         }
     }
 
-    private void SkillStoreOpen()
+    public void PlayerExpUp(int dieIdx)
+    {
+        playerData.Exp = dieIdx * 20f;
+        expImage.fillAmount = playerData.Exp / playerData.MaxExp;
+        if (playerData.Exp >= playerData.MaxExp)
+        {
+            SkillStoreOpen();
+            playerData.Exp -= playerData.MaxExp;
+            expImage.fillAmount = playerData.Exp / playerData.MaxExp;
+        }
+
+    }
+    public void SkillStoreOpen()
     {
         touchPad.SetActive(false);
         skillPanel.SetActive(true);
@@ -117,7 +164,7 @@ public class SkillManager : MonoBehaviour
     private void CriticalUp()
     {
         SkillSelect();
-        if(playerData.plCritical >= 0.5)
+        if (playerData.plCritical >= 0.5)
         {
             playerData.plCritical += 0.025f;
         }
@@ -149,5 +196,14 @@ public class SkillManager : MonoBehaviour
         skillGost.SetActive(false);
         GameObject Potal = GameObject.Find("Door").transform.GetChild(0).gameObject;
         Potal.SetActive(true);
+        SoundManager.soundInst.GetComponent<AudioSource>().PlayOneShot(soundData.skillSelect);
+    }
+    public void EnemyDieCount()
+    {
+        enemyCount--;
+        if (enemyCount <= 0)
+        {
+            skillGost.transform.DOJump(new Vector3(0, 0, 2), 0, 0, 0.5f);
+        }
     }
 }

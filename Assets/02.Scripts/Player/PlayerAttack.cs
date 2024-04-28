@@ -12,14 +12,13 @@ public class PlayerAttack : MonoBehaviour
 
     private Transform attackPos;
     private LayerMask enemyLayer = 1 << 6;
-    RaycastHit closeEnemy = new RaycastHit();
+    Transform closeEnemy;
     Transform enemyTr;
     void Start()
     {
         touchPad = GameObject.Find("TouchPad_Image").GetComponent<TouchPad>();
         animator = transform.GetChild(0).GetComponent<Animator>();
         animator.SetFloat("AttackSpeed", playerData.plAtcSpeed);
-        Transform parentTransform = GameObject.Find("Enemies").transform;
         attackPos = GameObject.Find("AttackPos").transform;
         source = GetComponent<AudioSource>();
         FindEnemy();
@@ -34,7 +33,7 @@ public class PlayerAttack : MonoBehaviour
         }
         else
         {//멈춰서 공격o
-            if (closeEnemy.transform != null)
+            if (closeEnemy != null)
             {
                 Quaternion rot = Quaternion.LookRotation((closeEnemy.transform.position - transform.position).normalized);
                 rot.x = rot.z = 0f;
@@ -50,14 +49,13 @@ public class PlayerAttack : MonoBehaviour
 
     }
 
-    private void FindEnemy()
+    public void FindEnemy()
     {//피직스 스페어케스트를 활용해서 가장가까운 적을찾는게 맞을듯?
-        
+        Debug.Log("FindEnemy");
         RaycastHit[] hits;
         hits = Physics.SphereCastAll(transform.position, 10f, transform.forward, 20f, enemyLayer);
         if(hits.Length > 0 )
         {
-            Debug.Log("됨?");
             float closeEnemydis = Mathf.Infinity;
             foreach (RaycastHit hit in hits)
             {
@@ -65,11 +63,16 @@ public class PlayerAttack : MonoBehaviour
                 if (dis < closeEnemydis)
                 {
                     closeEnemydis = dis;
-                    this.closeEnemy = hit;
+                    closeEnemy = hit.transform;
                     enemyTr = hit.transform;
                 }
             }
         }
+        else
+        {
+            closeEnemy = null;
+        }
+        
         /*for (int i = 0; i < enemiesList.Count; i++)
         {
             float distanceToEnemy = Vector3.Distance(transform.position, enemiesList[i].position); // 플레이어와 적 사이의 거리 계산
@@ -110,10 +113,6 @@ public class PlayerAttack : MonoBehaviour
         source.PlayOneShot(soundData.arrowClip);
     }
 
-    public void EnemyDie(Transform tr)
-    {
-        FindEnemy();
-    }
     public void AttackSpeedUp()
     {
         animator.SetFloat("AttackSpeed", playerData.plAtcSpeed);

@@ -6,7 +6,6 @@ using Unity.VisualScripting;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField] private float moveSpeed = 1.0f;
     [SerializeField] PlayerData playerData;
     private float h = 0, v = 0;
     private Animator animator;

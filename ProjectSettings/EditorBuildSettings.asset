@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/01.Scenes/StartSecene.unity
+    guid: 5e66862cf43158f4fb995f7d114e1fc2
+  - enabled: 1
     path: Assets/01.Scenes/Player.unity
     guid: 76506646f2399b94aa1339195e990acb
   - enabled: 1
@@ -14,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/01.Scenes/Enemy01.unity
     guid: c3285aaba73f86a49ad80405fe8ac548
+  - enabled: 1
+    path: Assets/01.Scenes/Enemy02.unity
+    guid: ad69a64c54ec0a74a9d3eab706bf302e
   m_configObjects: {}

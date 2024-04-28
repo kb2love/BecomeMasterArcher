@@ -9,6 +9,8 @@ public class PlayerData : ScriptableObject
     public float plHP;
     public float plAtcSpeed;
     public float plCritical;
+    public float Exp;
+    public float MaxExp;
     public bool isDoubleAtc;
     public GameObject arrow;
 }

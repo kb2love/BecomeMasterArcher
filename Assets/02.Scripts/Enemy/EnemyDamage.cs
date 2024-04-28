@@ -5,7 +5,8 @@ using DG.Tweening;
 public class EnemyDamage : MonoBehaviour
 {
     [SerializeField] private EnemyData _enemyData;
-    [SerializeField] SoundData soundData;
+    [SerializeField] private SoundData soundData;
+    [SerializeField] private PlayerData playerData;
     private EnemyState enemyMove;
     public float hp;
     private Animator animator;
@@ -35,12 +36,13 @@ public class EnemyDamage : MonoBehaviour
             enemyMove.E_Die();
             animator.SetTrigger("DieTrigger");
             animator.SetBool("IsDie", true);
+            GameObject.Find("Enemies").GetComponent<EnemyCount>().EnemyCountDown(this.gameObject);
             DOTween.Sequence()
             .AppendInterval(1.2f)
             .AppendCallback(() => gameObject.SetActive(false))
             .SetUpdate(true);
             PlayerAttack playerAttack = GameObject.Find("Player").GetComponent<PlayerAttack>();
-            playerAttack.EnemyDie(transform);
+            playerAttack.FindEnemy();
         }
     }
 
