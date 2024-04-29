@@ -2,47 +2,56 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using System.ComponentModel;
+
 public class EnemyDamage : MonoBehaviour
 {
     [SerializeField] private EnemyData _enemyData;
     [SerializeField] private SoundData soundData;
     [SerializeField] private PlayerData playerData;
-    private EnemyState enemyMove;
     public float hp;
     private Animator animator;
     private AudioSource source;
+    public bool isDie;
+    public bool isHit = false;
+    public bool isDefand = false;
     void Start()
     {
         hp = _enemyData.Hp;
+        isDie = false;
         source = GetComponent<AudioSource>();
-        enemyMove = GetComponent<EnemyState>();
         animator = GetComponent<Animator>();
     }
     public void RecieveDamage(float damage)
     {
-        hp -= damage;
-        Debug.Log(hp);
-        animator.SetTrigger("HitTrigger");
-        HitEff();
-        SoundManager.soundInst.PlaySound(source, soundData.e_hitClip);
-        DOTween.Sequence()
-            .AppendCallback(() => enemyMove.IsHitBool(true))
-            .AppendInterval(0.5f)
-            .AppendCallback(() => enemyMove.IsHitBool(false))
-            .SetUpdate(true);
-        if (hp <= 0)
+        if(!isDefand)
         {
-            gameObject.GetComponent<Collider>().enabled = false;
-            enemyMove.E_Die();
-            animator.SetTrigger("DieTrigger");
-            animator.SetBool("IsDie", true);
-            GameObject.Find("Enemies").GetComponent<EnemyCount>().EnemyCountDown(this.gameObject);
+            hp -= damage;
+            animator.SetTrigger("HitTrigger");
+            HitEff();
+            SoundManager.soundInst.PlaySound(source, soundData.e_hitClip);
             DOTween.Sequence()
-            .AppendInterval(1.2f)
-            .AppendCallback(() => gameObject.SetActive(false))
-            .SetUpdate(true);
-            PlayerAttack playerAttack = GameObject.Find("Player").GetComponent<PlayerAttack>();
-            playerAttack.FindEnemy();
+                .AppendCallback(() => isHit = true)
+                .AppendInterval(0.5f)
+                .AppendCallback(() => isHit = false)
+                .SetUpdate(true);
+            if (hp <= 0)
+            {
+                gameObject.GetComponent<Collider>().enabled = false;
+                animator.SetTrigger("DieTrigger");
+                GameObject.Find("Player").GetComponent<PlayerMovement>().PlayerExpUp();
+                GameObject.Find("Enemies").GetComponent<EnemyCount>().EnemyCountDown(this.gameObject);
+                DOTween.Sequence()
+                .AppendInterval(5f)
+                .AppendCallback(() => gameObject.SetActive(false))
+                .SetUpdate(true);
+                PlayerAttack playerAttack = GameObject.Find("Player").GetComponent<PlayerAttack>();
+                playerAttack.FindEnemy();
+            }
+        }
+        else
+        {
+            HitEff();
         }
     }
 

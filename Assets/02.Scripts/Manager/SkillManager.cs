@@ -9,14 +9,13 @@ public class SkillManager : MonoBehaviour
 {
     public static SkillManager skillInst;
     [SerializeField] SkillData skillData;
-    [SerializeField] PlayerData playerData;
     [SerializeField] SoundData soundData;
     [SerializeField] private Transform[] enemies;
     [SerializeField] private List<GameObject> enemiesList;
-    private Image expImage;
+    private GameData gameData;
     private GameObject skillGost;
     private int enemyCount = 0;
-    private TouchPad touchPadIm;
+    private TouchPad touchPadCom;
     private GameObject skillPanel;
     private GameObject touchPad;
     private Image skillButtonIm01;
@@ -36,9 +35,9 @@ public class SkillManager : MonoBehaviour
         skillButtonIm02 = skillPanel.transform.GetChild(1).GetComponent<Image>();
         touchPad = GameObject.Find("Canvas").transform.GetChild(0).gameObject;
         skillSprites = new Sprite[] { skillData.attackPower_Im, skillData.attackSpeed_Im, skillData.criticalUp_Im, skillData.hpUp_Im, skillData.doubleAttack_Im };
-        touchPadIm = GameObject.Find("TouchPad_Image").GetComponent<TouchPad>();
+        touchPadCom = GameObject.Find("TouchPad_Image").GetComponent<TouchPad>();
         skillGost = GameObject.Find("SkillGost").gameObject;
-        expImage = GameObject.Find("ExpImage").GetComponent<Image>();
+        gameData = DataManager.dataInst.gameData;
         if (GameObject.Find("Enemies") != null)
         {
             enemies = GameObject.Find("Enemies").GetComponentsInChildren<Transform>();
@@ -75,29 +74,30 @@ public class SkillManager : MonoBehaviour
         }
     }
 
-    public void PlayerExpUp(int dieIdx)
-    {
-        playerData.Exp = dieIdx * 20f;
-        expImage.fillAmount = playerData.Exp / playerData.MaxExp;
-        if (playerData.Exp >= playerData.MaxExp)
-        {
-            SkillStoreOpen();
-            playerData.Exp -= playerData.MaxExp;
-            expImage.fillAmount = playerData.Exp / playerData.MaxExp;
-        }
-
-    }
     public void SkillStoreOpen()
     {
         touchPad.SetActive(false);
         skillPanel.SetActive(true);
-        touchPadIm.buttonPress = false;
+        touchPadCom.enabled = false;
+        touchPadCom.buttonPress = false;
         Time.timeScale = 0;
         SoundManager.soundInst.GetComponent<AudioSource>().PlayOneShot(soundData.storeOpenClip);
-        firstIndex = Random.Range(0, skillSprites.Length);
-        secondIndex = Random.Range(0, skillSprites.Length);
-        while (firstIndex == secondIndex)
+        if (!gameData.isDoubleAtc)
+        {
+            firstIndex = Random.Range(0, skillSprites.Length);
             secondIndex = Random.Range(0, skillSprites.Length);
+            while (firstIndex == secondIndex)
+                secondIndex = Random.Range(0, skillSprites.Length);
+        }
+        else
+        {
+            firstIndex = Random.Range(0, skillSprites.Length);
+            while(firstIndex == 4)
+                firstIndex = Random.Range(0, skillSprites.Length);
+            secondIndex = Random.Range(0, skillSprites.Length);
+            while (firstIndex == secondIndex || secondIndex == 4)
+                secondIndex = Random.Range(0, skillSprites.Length);
+        }
         // 두 개의 스프라이트 할당
         skillButtonIm01.sprite = skillSprites[firstIndex];
         skillButtonIm02.sprite = skillSprites[secondIndex];
@@ -151,39 +151,40 @@ public class SkillManager : MonoBehaviour
     }
     private void AttackPower()
     {
-        playerData.plDamage *= 1.2f;
-        Debug.Log(playerData.plDamage);
+        gameData.plDamage *= 1.2f;
+        Debug.Log(gameData.plDamage);
         SkillSelect();
     }
     private void AttackSpeed()
     {
+        gameData.plAtcSpeed *= 1.2f;
+        Debug.Log(gameData.plAtcSpeed);
         SkillSelect();
-        playerData.plAtcSpeed *= 1.2f;
-        Debug.Log(playerData.plAtcSpeed);
     }
     private void CriticalUp()
     {
-        SkillSelect();
-        if (playerData.plCritical >= 0.5)
+        if (gameData.plCritical >= 0.5)
         {
-            playerData.plCritical += 0.025f;
+            gameData.plCritical += 0.025f;
         }
         else
         {
-            playerData.plCritical *= 2f;
+            gameData.plCritical *= 2f;
         }
-        Debug.Log(playerData.plCritical);
+        Debug.Log(gameData.plCritical);
+        SkillSelect();
     }
     private void HpUp()
     {
+        gameData.plHP *= 1.2f;
+        gameData.plMaxHP *= 1.2f;
+        Debug.Log(gameData.plHP);
         SkillSelect();
-        playerData.plHP *= 1.2f;
-        Debug.Log(playerData.plHP);
     }
     private void DoubleAttack()
     {
-        playerData.isDoubleAtc = true;
-        Debug.Log(playerData.isDoubleAtc);
+        gameData.isDoubleAtc = true;
+        Debug.Log(gameData.isDoubleAtc);
         SkillSelect();
     }
     private void SkillSelect()
@@ -191,12 +192,13 @@ public class SkillManager : MonoBehaviour
         skillPanel.SetActive(false);
         Time.timeScale = 1.0f;
         touchPad.SetActive(true);
-        touchPadIm.buttonPress = true;
+        touchPadCom.enabled = true;
         GameObject skillGost = GameObject.Find("SkillGost").gameObject;
         skillGost.SetActive(false);
         GameObject Potal = GameObject.Find("Door").transform.GetChild(0).gameObject;
         Potal.SetActive(true);
         SoundManager.soundInst.GetComponent<AudioSource>().PlayOneShot(soundData.skillSelect);
+        DataManager.dataInst.SaveData();
     }
     public void EnemyDieCount()
     {

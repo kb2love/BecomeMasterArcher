@@ -63,7 +63,7 @@ public class TouchPad : MonoBehaviour
                     if (touchIdx == i)
                         HandleInput(touchPos);
                 }
-                if (touch.phase == TouchPhase.Ended)
+                if (touch.phase == TouchPhase.Ended || !buttonPress)
                 {
                     if (touchIdx == i)
                         touchIdx = -1;

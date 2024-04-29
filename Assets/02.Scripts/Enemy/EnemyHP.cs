@@ -32,7 +32,7 @@ public class EnemyHP : MonoBehaviour
     {
         if(hpImage.enabled)
         {
-            transform.position = enemiesList[e_idx].transform.position + Vector3.up * 0.25f;
+            transform.position = enemiesList[e_idx].transform.position + Vector3.up * 1.0f;
             hpImage.fillAmount = enemiesList[e_idx].GetComponent<EnemyDamage>().hp / enemyData.Hp;
             if(enemiesList[e_idx].GetComponent<EnemyDamage>().hp <= 0)
                 gameObject.SetActive(false);

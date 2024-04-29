@@ -9,16 +9,16 @@ public class PlayerAttack : MonoBehaviour
     private Animator animator;
     private TouchPad touchPad;
     private AudioSource source;
-
+    private GameData gameData;
     private Transform attackPos;
     private LayerMask enemyLayer = 1 << 6;
-    Transform closeEnemy;
-    Transform enemyTr;
+    [SerializeField] Transform closeEnemy;
     void Start()
     {
         touchPad = GameObject.Find("TouchPad_Image").GetComponent<TouchPad>();
         animator = transform.GetChild(0).GetComponent<Animator>();
-        animator.SetFloat("AttackSpeed", playerData.plAtcSpeed);
+        gameData = DataManager.dataInst.gameData;
+        animator.SetFloat("AttackSpeed", gameData.plAtcSpeed);
         attackPos = GameObject.Find("AttackPos").transform;
         source = GetComponent<AudioSource>();
         FindEnemy();
@@ -51,8 +51,7 @@ public class PlayerAttack : MonoBehaviour
 
     public void FindEnemy()
     {//피직스 스페어케스트를 활용해서 가장가까운 적을찾는게 맞을듯?
-        Debug.Log("FindEnemy");
-        RaycastHit[] hits;
+        /*RaycastHit[] hits;
         hits = Physics.SphereCastAll(transform.position, 10f, transform.forward, 20f, enemyLayer);
         if(hits.Length > 0 )
         {
@@ -71,26 +70,26 @@ public class PlayerAttack : MonoBehaviour
         else
         {
             closeEnemy = null;
-        }
-        
-        /*for (int i = 0; i < enemiesList.Count; i++)
-        {
-            float distanceToEnemy = Vector3.Distance(transform.position, enemiesList[i].position); // 플레이어와 적 사이의 거리 계산
-
-            if (distanceToEnemy < closeEnemydis)
-            {
-                idx = i;
-                closeEnemydis = distanceToEnemy; // 현재 적과의 거리가 현재까지의 가장 짧은 거리보다 짧으면 갱신
-                isFind = false;
-                break;
-            }
         }*/
+        RaycastHit[] hits;
+        hits = Physics.SphereCastAll(transform.position, 10f, transform.forward, 20f, enemyLayer);
+
+        if (hits.Length > 0)
+        {
+            System.Array.Sort(hits, (x, y) => Vector3.Distance(transform.position, x.point).CompareTo(Vector3.Distance(transform.position, y.point)));
+
+            closeEnemy = hits[0].transform;
+        }
+        else
+        {
+            closeEnemy = null;
+        }
     }
     public void Attack()
     {
         if (ObjectPoolingManager.objInstance.GetArrow() != null)
         {
-            if(!playerData.isDoubleAtc)
+            if(!gameData.isDoubleAtc)
             {
                 ArrowShot();
             }
@@ -115,6 +114,6 @@ public class PlayerAttack : MonoBehaviour
 
     public void AttackSpeedUp()
     {
-        animator.SetFloat("AttackSpeed", playerData.plAtcSpeed);
+        animator.SetFloat("AttackSpeed", gameData.plAtcSpeed);
     }
 }

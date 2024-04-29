@@ -6,28 +6,27 @@ using DG.Tweening;
 
 public class ArrowCtrl : MonoBehaviour
 {
-    [SerializeField] PlayerData playerData;
+    private GameData gameData;
     private Tweener tweener;
     void OnEnable()
     {
         if(tweener != null)
             tweener.Kill();
         tweener = transform.DOLocalMove(transform.forward * 10f, 2.5f).OnComplete(SetOff);
+        gameData = DataManager.dataInst.gameData;
     }
     void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag == "Enemy")
         {
             float randomValue = Random.value;
-            if(randomValue < playerData.plCritical)
+            if(randomValue < gameData.plCritical)
             {
-                other.GetComponent<EnemyDamage>().RecieveDamage(playerData.plDamage * 2);
-                Debug.Log("크리티컬");
+                other.GetComponent<EnemyDamage>().RecieveDamage(gameData.plDamage * 2);
             }
             else
             {
-                other.GetComponent<EnemyDamage>().RecieveDamage(playerData.plDamage);
-                Debug.Log("일반공격");
+                other.GetComponent<EnemyDamage>().RecieveDamage(gameData.plDamage);
             }
             gameObject.SetActive(false);
         }

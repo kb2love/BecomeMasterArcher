@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 public class SceneMove : MonoBehaviour
@@ -12,7 +13,7 @@ public class SceneMove : MonoBehaviour
     private Animator animator;
     private string stage = "Stage";
     private string player = "Player";
-    
+    private GameData gameData;
     void Awake()
     {
         if (scenenInst == null)
@@ -20,8 +21,8 @@ public class SceneMove : MonoBehaviour
         else if (scenenInst != this)
             Destroy(scenenInst);
         DontDestroyOnLoad(scenenInst);
+        gameData = DataManager.dataInst.gameData;
         SceneManager.sceneLoaded += OnSceneChanged;
-
     }
     void OnDisable()
     {
@@ -38,15 +39,27 @@ public class SceneMove : MonoBehaviour
             animator.SetTrigger("StageStart");
         }
     }
-
+    public void StartScene()
+    {
+        SceneManager.LoadScene(0);
+        sceneIdx = 0;
+        sceneTextIdx = 0;
+    }
     public void NextStage()
     {
         sceneIdx++;
         sceneTextIdx++;
+        gameData.sceneIdx = sceneIdx;
+        DataManager.dataInst.SaveData();
         if(sceneTextIdx == 1)
         {
             SceneManager.LoadScene(player);
             SceneManager.LoadScene(stage, LoadSceneMode.Additive);
+        }
+        else if(sceneTextIdx == 3)
+        {
+            SceneManager.LoadScene(player);
+            SceneManager.LoadScene(10, LoadSceneMode.Additive);
         }
         else if(sceneTextIdx == 5)
         {
@@ -67,7 +80,10 @@ public class SceneMove : MonoBehaviour
     }
     public void SceneLoad()
     {
-        SceneManager.LoadScene(sceneIdx);
+        DataManager.dataInst.LoadData();
+        SceneManager.LoadScene(player);
+        SceneManager.LoadScene(stage, LoadSceneMode.Additive);
+        SceneManager.LoadScene(sceneIdx, LoadSceneMode.Additive);
     }
     public void QuitGame()
     {
@@ -76,5 +92,6 @@ public class SceneMove : MonoBehaviour
 #else
         Application.Quit();
 #endif
+        DataManager.dataInst.SaveData();
     }
 }

@@ -5,7 +5,6 @@ using UnityEngine;
 public class EnemyCount : MonoBehaviour
 {
     [SerializeField] List<GameObject> enemies = new List<GameObject>();
-    private int enemyDieIdx = 0;
     void Start()
     {
         GameObject enemy = GameObject.Find("Enemies").gameObject;
@@ -22,13 +21,9 @@ public class EnemyCount : MonoBehaviour
     public void EnemyCountDown(GameObject enemy)
     {
         enemies.Remove(enemy);
-        enemyDieIdx++;
-        Debug.Log(enemyDieIdx);
         if (enemies.Count == 0)
         {
-            SkillManager.skillInst.PlayerExpUp(enemyDieIdx);
             GameObject.Find("Door").transform.GetChild(0).gameObject.SetActive(true);
-            enemyDieIdx = 0;
         }
     }
 }

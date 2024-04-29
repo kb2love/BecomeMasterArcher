@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class GameManager : MonoBehaviour
 {
     public static GameManager GM;
-    [SerializeField] PlayerData playerData;
+    private GameData gameData;
     private void Awake()
     {
         if (GM == null)
@@ -14,29 +14,23 @@ public class GameManager : MonoBehaviour
         else if (GM != this)
             Destroy(gameObject);
         DontDestroyOnLoad(gameObject);
-        DataClear();
     }
-
-    private void DataClear()
-    {
-        playerData.plSpeed = 1.5f;
-        playerData.plDamage = 20f;
-        playerData.plHP = 100f;
-        playerData.plAtcSpeed = 1.0f;
-        playerData.plCritical = 0.05f;
-        playerData.Exp = 0.0f;
-        playerData.MaxExp = 100.0f;
-        playerData.isDoubleAtc = false;
-    }
-
     void Start()
     {
-         
+        gameData = DataManager.dataInst.gameData;
+        DataClear();
+    }
+    private void DataClear()
+    {
+        gameData.plSpeed = 1.5f;
+        gameData.plDamage = 20f;
+        gameData.plHP = 100f;
+        gameData.plMaxHP = 100f;
+        gameData.plAtcSpeed = 1.0f;
+        gameData.plCritical = 0.05f;
+        gameData.Exp = 0.0f;
+        gameData.MaxExp = 100.0f;
+        gameData.isDoubleAtc = false;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

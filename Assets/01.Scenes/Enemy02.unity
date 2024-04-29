@@ -147,7 +147,6 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 94324617}
-  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -158,6 +157,7 @@ Transform:
   - {fileID: 729931726}
   - {fileID: 1634975806}
   m_Father: {fileID: 0}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &94324620
 MonoBehaviour:
@@ -332,7 +332,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7092925197443565251, guid: b8c8b77bdf842b4438b353b2871df7fe, type: 3}
       propertyPath: m_Name
-      value: Hp_Image (3)
+      value: EnemyHp_Image (3)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -580,6 +580,7 @@ RectTransform:
   - {fileID: 318367841}
   - {fileID: 1919691428}
   m_Father: {fileID: 0}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -680,7 +681,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7092925197443565251, guid: b8c8b77bdf842b4438b353b2871df7fe, type: 3}
       propertyPath: m_Name
-      value: Hp_Image (2)
+      value: EnemyHp_Image (2)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -730,13 +731,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1453180722}
-  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.537, z: -1.545}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1634975805
 PrefabInstance:
@@ -898,7 +899,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7092925197443565251, guid: b8c8b77bdf842b4438b353b2871df7fe, type: 3}
       propertyPath: m_Name
-      value: Hp_Image (1)
+      value: EnemyHp_Image (1)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1004,17 +1005,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7092925197443565251, guid: b8c8b77bdf842b4438b353b2871df7fe, type: 3}
       propertyPath: m_Name
-      value: Hp_Image
+      value: EnemyHp_Image
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b8c8b77bdf842b4438b353b2871df7fe, type: 3}
---- !u!1660057539 &9223372036854775807
-SceneRoots:
-  m_ObjectHideFlags: 0
-  m_Roots:
-  - {fileID: 94324619}
-  - {fileID: 1428611734}
-  - {fileID: 1453180724}
