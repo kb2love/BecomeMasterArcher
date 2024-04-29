@@ -5,10 +5,12 @@ using UnityEngine;
 public class EnemyBossDragon : MonoBehaviour
 {
     [SerializeField] EnemyData enemyData;
-    private EnemyDamage enemyDamage;
+    [SerializeField] SoundData soundData;
+    private EnemyBossDamage enemyDamage;
     private Animator animator;
     private GameObject shield;
     private Transform plTr;
+    private AudioSource source;
     private int aniIdx = Animator.StringToHash("RandomAttackIdx");
     private int aniFlyIdx = Animator.StringToHash("RandomFlyAttackIdx");
     private int randomAttackIdx = 0;
@@ -22,18 +24,19 @@ public class EnemyBossDragon : MonoBehaviour
     void Start()
     {
         animator = GetComponent<Animator>();
-        enemyDamage = GetComponent<EnemyDamage>();
+        enemyDamage = GetComponent<EnemyBossDamage>();
         plTr = GameObject.Find("Player").transform;
         randomFlyAttackIdx = Random.Range(0, 2);
         shield = Instantiate(enemyData.bossShield, transform.position, Quaternion.identity);
         shield.SetActive(false);
     }
 
-    void Update()
+    private void OnTriggerEnter(Collider other)
     {
-        Quaternion rot = Quaternion.LookRotation((plTr.position - transform.position).normalized);
-        rot.z = rot.x = 0;
-        Quaternion.Slerp(transform.rotation, rot, 10f * Time.deltaTime);
+        if (other.gameObject.tag == "Player")
+        {
+            other.GetComponent<PlayerMovement>().PlayerRecieveDamage(enemyData.bossDamage);
+        }
     }
     public void RandomAttack()
     {
@@ -73,44 +76,32 @@ public class EnemyBossDragon : MonoBehaviour
         Debug.Log(randomAttackIdx);
         animator.SetInteger(aniIdx, randomAttackIdx);
     }
+    //*******************************************애니메이션에 들어가는 메서드******************************************//
     public void DragonRun()
     {
-        if (currentTween != null && currentTween.IsActive())
-        {
-            currentTween.Kill();
-        }
-
+        Vector3 dir = PlayerLookRotation();
         // 새로운 Tween 실행
-        currentTween = transform.DOMove(transform.forward * 2.0f, 2f);
+        currentTween = transform.DOMove(dir * 2.0f, 2f);
     }
     public void DragunFlyFoward()
     {
-        if (currentTween != null && currentTween.IsActive())
-        {
-            currentTween.Kill();
-        }
-        currentTween = transform.DOMove(transform.forward * 2.0f, 2f);
+        Vector3 dir = PlayerLookRotation();
+        currentTween = transform.DOMove(dir * 2.0f, 2f);
     }
+
     public void DragonFly()
     {
-        if (currentTween != null && currentTween.IsActive())
-        {
-            currentTween.Kill();
-        }
+        Vector3 dir = PlayerLookRotation();
         currentTween = transform.DOMove(transform.up * 1.0f, 2f);
     }
     public void DragonLand()
     {
-        if (currentTween != null && currentTween.IsActive())
-        {
-            currentTween.Kill();
-        }
-
-        // 새로운 Tween 실행
+        Vector3 dir = PlayerLookRotation();
         currentTween = transform.DOMove(transform.up * -1.0f, 2f);
     }
     public void DefendOn()
     {
+        Vector3 dir = PlayerLookRotation();
         enemyDamage.isDefand = true;
         shield.transform.position = transform.position;
         shield.SetActive(true);
@@ -119,30 +110,41 @@ public class EnemyBossDragon : MonoBehaviour
     {
         enemyDamage.isDefand = false;
         shield.SetActive(false);
-        
+
+        Vector3 dir = PlayerLookRotation();
     }
     public void NormalAttack()
     {
-        Collider[] overSh = Physics.OverlapSphere(flyVec * 1.0f, 1.6f, 1 << 3);
-        foreach (Collider col in overSh)
-        {
-            col.GetComponent<PlayerMovement>().PlayerRecieveDamage(enemyData.bossDamage);
-        }
+        Vector3 dir = PlayerLookRotation();
+        AttackOverlap();
     }
     public void EnemyFireAttack()
     {
 
+        Vector3 dir = PlayerLookRotation();
         if (isFly)
             flyVec = transform.position - transform.up * 1.0f;
         else
             flyVec = transform.position;
-        Collider[] overSh = Physics.OverlapSphere(flyVec * 1.0f, 1.6f, 1 << 3);
+        source.PlayOneShot(soundData.boomClip);
         FireEff();
+        AttackOverlap();
+    }
+    public void Scream()
+    {
+        source.PlayOneShot(soundData.screamClip);
+    }
+    //*********************************애니메이션에 들어가는 메서드의 메서드********************************//
+    private void AttackOverlap()
+    {
+        Collider[] overSh = Physics.OverlapSphere(flyVec * 1.0f, 2f, 1 << 3);
         foreach (Collider col in overSh)
         {
+            Debug.Log(col.gameObject.name);
             col.GetComponent<PlayerMovement>().PlayerRecieveDamage(enemyData.bossDamage);
         }
     }
+
     public void RandomFlyAttack()
     {
         atFIdx = randomFlyAttackIdx;
@@ -158,7 +160,7 @@ public class EnemyBossDragon : MonoBehaviour
     }
     private void FireEff()
     {
-        GameObject fireEff = ObjectPoolingManager.objInstance.GetFireEff();
+        GameObject fireEff = Instantiate(enemyData.bossFireEff);
         fireEff.transform.position = flyVec + transform.forward * 1.0f;
         fireEff.transform.rotation = transform.rotation;
         fireEff.SetActive(true);
@@ -167,5 +169,19 @@ public class EnemyBossDragon : MonoBehaviour
         .AppendInterval(1f)
         .AppendCallback(() => fireEff.SetActive(false))
         .SetUpdate(true);
+    }
+    private Vector3 PlayerLookRotation()
+    {
+
+        if (currentTween != null && currentTween.IsActive())
+        {
+            currentTween.Kill();
+        }
+        Vector3 dir = (plTr.position - transform.position).normalized;
+        Quaternion lookRotation = Quaternion.LookRotation(dir);
+        lookRotation.z = lookRotation.x = 0;
+        // 적의 회전을 시선 벡터 방향으로 Tween을 사용하여 변경하기
+        currentTween = transform.DORotateQuaternion(lookRotation, 0.5f);
+        return dir;
     }
 }

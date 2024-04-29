@@ -25,11 +25,6 @@ public class SoundManager : MonoBehaviour
     {
         BackGroundSound(source, soundData.normalBGM);
     }
-    public void PlaySound(AudioSource source, AudioClip clip)
-    {
-        source.clip = clip;
-        source.Play();
-    }
     public void BackGroundSound(AudioSource source, AudioClip clip)
     {
         source.clip = clip;

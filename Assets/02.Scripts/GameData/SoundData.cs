@@ -12,5 +12,7 @@ public class SoundData : ScriptableObject
     public AudioClip nextStageClip;
     public AudioClip storeOpenClip;
     public AudioClip skillSelect;
-
+    public AudioClip screamClip;
+    public AudioClip boomClip;
+    public AudioClip dieClip;
 }

@@ -9,6 +9,7 @@ TagManager:
   - FxTemporaire
   - Enemy
   - Arrow
+  - BossDragon
   layers:
   - Default
   - TransparentFX

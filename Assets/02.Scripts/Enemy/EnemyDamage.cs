@@ -14,7 +14,6 @@ public class EnemyDamage : MonoBehaviour
     private AudioSource source;
     public bool isDie;
     public bool isHit = false;
-    public bool isDefand = false;
     void Start()
     {
         hp = _enemyData.Hp;
@@ -24,34 +23,29 @@ public class EnemyDamage : MonoBehaviour
     }
     public void RecieveDamage(float damage)
     {
-        if(!isDefand)
+        hp -= damage;
+        animator.SetTrigger("HitTrigger");
+        HitEff();
+        source.PlayOneShot(soundData.e_hitClip);
+        DOTween.Sequence()
+            .AppendCallback(() => isHit = true)
+            .AppendInterval(0.5f)
+            .AppendCallback(() => isHit = false)
+            .SetUpdate(true);
+        if (hp <= 0)
         {
-            hp -= damage;
-            animator.SetTrigger("HitTrigger");
-            HitEff();
-            SoundManager.soundInst.PlaySound(source, soundData.e_hitClip);
+            gameObject.GetComponent<Collider>().enabled = false;
+            animator.SetTrigger("DieTrigger");
+            PlayerMovement player = GameObject.Find("Player").GetComponent<PlayerMovement>();
+            player.PlayerExpUp(1);
+            player.Heal(2.5f);
+            GameObject.Find("Enemies").GetComponent<EnemyCount>().EnemyCountDown(this.gameObject);
             DOTween.Sequence()
-                .AppendCallback(() => isHit = true)
-                .AppendInterval(0.5f)
-                .AppendCallback(() => isHit = false)
-                .SetUpdate(true);
-            if (hp <= 0)
-            {
-                gameObject.GetComponent<Collider>().enabled = false;
-                animator.SetTrigger("DieTrigger");
-                GameObject.Find("Player").GetComponent<PlayerMovement>().PlayerExpUp();
-                GameObject.Find("Enemies").GetComponent<EnemyCount>().EnemyCountDown(this.gameObject);
-                DOTween.Sequence()
-                .AppendInterval(5f)
-                .AppendCallback(() => gameObject.SetActive(false))
-                .SetUpdate(true);
-                PlayerAttack playerAttack = GameObject.Find("Player").GetComponent<PlayerAttack>();
-                playerAttack.FindEnemy();
-            }
-        }
-        else
-        {
-            HitEff();
+            .AppendInterval(1.5f)
+            .AppendCallback(() => gameObject.SetActive(false))
+            .SetUpdate(true);
+            PlayerAttack playerAttack = GameObject.Find("Player").GetComponent<PlayerAttack>();
+            playerAttack.FindEnemy();
         }
     }
 

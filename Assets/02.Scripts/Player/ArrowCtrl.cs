@@ -30,6 +30,19 @@ public class ArrowCtrl : MonoBehaviour
             }
             gameObject.SetActive(false);
         }
+        else if(other.gameObject.tag == "BossDragon")
+        {
+            float randomValue = Random.value;
+            if (randomValue < gameData.plCritical)
+            {
+                other.GetComponent<EnemyBossDamage>().RecieveDamage(gameData.plDamage * 2);
+            }
+            else
+            {
+                other.GetComponent<EnemyBossDamage>().RecieveDamage(gameData.plDamage);
+            }
+            gameObject.SetActive(false);
+        }
     }
     void OnDisable()
     {

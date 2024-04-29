@@ -6,10 +6,13 @@ using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField] SoundData soundData;
+    [SerializeField] private SoundData soundData;
+    private AudioSource source;
     private Image expImage;
+    private Image hpImage;
     private float h = 0, v = 0;
     private float mvSpeed;
+    private CharacterController ch;
     private Animator animator;
     private GameData gameData;
     private Vector3 frontDir;
@@ -22,10 +25,14 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         animator =  GetComponentInChildren<Animator>();
+        ch = GetComponent<CharacterController>();
+        source = GetComponent<AudioSource>();
         gameData = DataManager.dataInst.gameData;
         expImage = GameObject.Find("ExpImage").GetComponent<Image>();
         mvSpeed = DataManager.dataInst.gameData.plSpeed;
         expImage.fillAmount = gameData.Exp / gameData.MaxExp;
+        hpImage = GameObject.Find("PlayerHp_Image").transform.GetChild(0).GetComponent<Image>();
+        hpImage.fillAmount = gameData.plHP / gameData.plMaxHP;
     }
 
     void Update()
@@ -39,20 +46,37 @@ public class PlayerMovement : MonoBehaviour
             dir.z = dir.x = 0;
             transform.rotation = Quaternion.Slerp(transform.rotation, dir, 10f * Time.deltaTime);
         }
-        transform.Translate(h * Time.deltaTime * mvSpeed, 0, v * Time.deltaTime * mvSpeed, Space.World);
+        Vector3 moveDir = new Vector3(h * Time.deltaTime * mvSpeed, 0, v * Time.deltaTime * mvSpeed);
+        ch.Move(moveDir);
 
     }
-
+    public void Heal(float heal)
+    {
+        gameData.plHP += heal;
+        if(gameData.plHP >= gameData.plMaxHP)
+            gameData.plHP = gameData.plMaxHP;
+        hpImage.fillAmount = gameData.plHP / gameData.plMaxHP;
+    }
     public void PlayerRecieveDamage(float damage)
     {
         gameData.plHP -= damage;
+        hpImage.fillAmount = gameData.plHP / gameData.plMaxHP;
+        source.PlayOneShot(soundData.plHitClip);
         HitEff();
         Camera.main.GetComponent<CameraMove>().Shake();
         if (gameData.plHP <= 0)
         {
-            SceneMove.scenenInst.StartScene();
+            StartCoroutine(playerDie());
         }
-        GameObject.Find("PlayerHp_Image").GetComponent<PlayerHP>().HpDown();
+    }
+    IEnumerator playerDie()
+    {
+        source.PlayOneShot(soundData.dieClip);
+        Time.timeScale = 0;
+        GameObject.Find("Canvas").transform.GetChild(4).gameObject.SetActive(true);
+        yield return new WaitForSecondsRealtime(2.0f);
+        Time.timeScale = 1;
+        SceneMove.scenenInst.StartScene();
     }
     private void HitEff()
     {
@@ -66,9 +90,9 @@ public class PlayerMovement : MonoBehaviour
         .AppendCallback(() => hitEff.SetActive(false))
         .SetUpdate(true);
     }
-    public void PlayerExpUp()
+    public void PlayerExpUp(int exp)
     {
-        gameData.Exp += 30f;
+        gameData.Exp += exp * 30f;
         expImage.fillAmount = gameData.Exp / gameData.MaxExp;
         if (gameData.Exp >= gameData.MaxExp)
         {

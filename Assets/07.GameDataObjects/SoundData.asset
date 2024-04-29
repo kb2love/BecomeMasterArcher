@@ -20,3 +20,6 @@ MonoBehaviour:
   nextStageClip: {fileID: 8300000, guid: a245ee5d75348c84a89ffb7992f1dc82, type: 3}
   storeOpenClip: {fileID: 8300000, guid: 75adfe9a619833445a701305b983e548, type: 3}
   skillSelect: {fileID: 8300000, guid: 5e1a9f876d3dafd47bc6b3dde25135fa, type: 3}
+  screamClip: {fileID: 8300000, guid: 2bef44c58e277b349992531b1fbab271, type: 3}
+  boomClip: {fileID: 8300000, guid: 05e969172b1426843a2bed02c899529d, type: 3}
+  dieClip: {fileID: 8300000, guid: 5ff823f546b52574a931e1d9b44290a6, type: 3}

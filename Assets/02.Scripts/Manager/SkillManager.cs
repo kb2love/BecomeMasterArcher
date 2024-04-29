@@ -193,7 +193,7 @@ public class SkillManager : MonoBehaviour
         Time.timeScale = 1.0f;
         touchPad.SetActive(true);
         touchPadCom.enabled = true;
-        GameObject skillGost = GameObject.Find("SkillGost").gameObject;
+        GameObject skillGost = GameObject.Find("SkillStore").transform.GetChild(0).gameObject; 
         skillGost.SetActive(false);
         GameObject Potal = GameObject.Find("Door").transform.GetChild(0).gameObject;
         Potal.SetActive(true);
