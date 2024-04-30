@@ -41,12 +41,13 @@ public class EnemyBossDamage : MonoBehaviour
             {
                 gameObject.GetComponent<Collider>().enabled = false;
                 animator.SetTrigger("DieTrigger");
+                hpImage.gameObject.SetActive(false);
                 PlayerMovement player = GameObject.Find("Player").GetComponent<PlayerMovement>();
                 player.PlayerExpUp(5);
                 player.Heal(60);
                 GameObject.Find("Enemies").GetComponent<EnemyCount>().EnemyCountDown(this.gameObject);
                 DOTween.Sequence()
-                .AppendInterval(3f)
+                .AppendInterval(5f)
                 .AppendCallback(() => gameObject.SetActive(false))
                 .SetUpdate(true);
                 PlayerAttack playerAttack = GameObject.Find("Player").GetComponent<PlayerAttack>();

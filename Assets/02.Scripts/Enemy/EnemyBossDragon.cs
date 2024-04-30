@@ -25,6 +25,7 @@ public class EnemyBossDragon : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         enemyDamage = GetComponent<EnemyBossDamage>();
+        source = GetComponent<AudioSource>();
         plTr = GameObject.Find("Player").transform;
         randomFlyAttackIdx = Random.Range(0, 2);
         shield = Instantiate(enemyData.bossShield, transform.position, Quaternion.identity);
