@@ -47,4 +47,5 @@ public class GameData
     public float MaxExp;
     public bool isDoubleAtc;
     public int sceneIdx;
+    public int stageCount;
 }
